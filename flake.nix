@@ -42,6 +42,7 @@
           buildInputs = with pkgs; [
             # Add extra build inputs here, etc.
             openssl
+            dbus.dev
           ];
           nativeBuildInputs = with pkgs; [
             # Add extra native build inputs here, etc.
@@ -54,6 +55,10 @@
             pname = "mycrate-deps";
           });
       in rec {
+        packages.hello = craneLib.buildPackage (commonRust
+          // {
+            inherit cargoArtifacts;
+          });
         packages.default = packages.hello;
         devShells.default = craneLib.devShell {
           inputsFrom = [packages.hello];
@@ -61,10 +66,6 @@
             pkgs.rust-analyzer
           ];
         };
-        packages.hello = craneLib.buildPackage (commonRust
-          // {
-            inherit cargoArtifacts;
-          });
       }
     );
 }
